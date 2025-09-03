@@ -1,103 +1,82 @@
-import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const isMock =
+    process.env.NEXT_PUBLIC_STRIPE_MOCK === "1" ||
+    process.env.NEXT_PUBLIC_STRIPE_MOCK === "true";
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      <main className="max-w-5xl mx-auto px-6 py-20">
+        <header className="flex items-center justify-between mb-12">
+          <div className="flex items-center gap-3">
+            <div className="rounded-md bg-foreground text-background font-bold px-3 py-2 dark:bg-white/90 dark:text-black">SB</div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Subscription Box — Demo</h1>
+          </div>
+
+          <nav className="flex gap-3">
+            <Link href="/plans" className="text-sm font-medium hover:underline">
+              Plans
+            </Link>
+            <Link href="/auth" className="text-sm font-medium hover:underline">
+              Sign in
+            </Link>
+          </nav>
+        </header>
+
+        {isMock && (
+          <div className="mb-6 rounded-md bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 p-3 text-sm">
+            Demo mode: payments are mocked. Use the Admin → Webhook Simulator to emulate billing events.
+          </div>
+        )}
+
+        <section className="grid lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <h2 className="text-4xl sm:text-5xl font-extrabold mb-4">Deliver delightful boxes monthly.</h2>
+            <p className="text-lg max-w-xl mb-6 text-muted-foreground">
+              Build, sell, and manage subscription boxes with demo-ready Stripe + Firebase wiring — configured to run locally without paid services.
+            </p>
+
+            <div className="flex gap-3">
+              <Link href="/plans" className="inline-flex items-center justify-center rounded-full bg-foreground text-background px-5 py-3 font-semibold shadow hover:brightness-95">
+                Browse plans
+              </Link>
+              <Link href="/auth" className="inline-flex items-center justify-center rounded-full border border-transparent px-5 py-3 font-medium hover:bg-gray-100">
+                Sign in / Sign up
+              </Link>
+            </div>
+
+            <ul className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-muted-foreground">
+              <li>✅ Demo Stripe checkout</li>
+              <li>✅ Admin webhook simulator</li>
+              <li>✅ Firestore rules & example data</li>
+            </ul>
+          </div>
+
+          <div className="rounded-xl border p-6 bg-white dark:bg-gray-800 shadow">
+            <h3 className="font-semibold mb-3">How it works</h3>
+            <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+              <li>Create an account and pick a plan.</li>
+              <li>Checkout (mocked) creates a subscription document.</li>
+              <li>Use Admin → Webhook Simulator to simulate billing events.</li>
+            </ol>
+          </div>
+        </section>
+
+        <footer className="mt-14 text-sm text-muted-foreground">
+          <div className="flex flex-wrap gap-4">
+            <Link href="/dashboard" className="hover:underline">
+              Dashboard
+            </Link>
+            <a href="https://github.com/" target="_blank" rel="noreferrer" className="hover:underline">
+              Repo
+            </a>
+            <Link href="/admin" className="hover:underline">
+              Admin
+            </Link>
+          </div>
+        </footer>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }

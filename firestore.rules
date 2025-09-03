@@ -1,0 +1,31 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users: users/{uid} - only the user can read/write their profile, admins can read/write all
+    match /users/{userId} {
+      allow read: if request.auth != null && (request.auth.uid == userId || request.auth.token.role == 'admin');
+      allow write: if request.auth != null && (request.auth.uid == userId || request.auth.token.role == 'admin');
+    }
+
+    // Plans: public read, only admins can create/update/delete
+    match /plans/{planId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null && request.auth.token.role == 'admin';
+    }
+
+    // Subscriptions: users can read their own subscriptions; admins can read all
+    match /subscriptions/{subId} {
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow read: if request.auth != null && (resource.data.userId == request.auth.uid || request.auth.token.role == 'admin');
+      allow update: if request.auth != null && (resource.data.userId == request.auth.uid || request.auth.token.role == 'admin');
+      allow delete: if request.auth != null && request.auth.token.role == 'admin';
+    }
+
+    // Default: deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

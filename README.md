@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Subscription Box Service (Portfolio Demo)
 
-## Getting Started
+This project is a subscription box service built with Next.js (App Router), TailwindCSS, Firebase (Auth, Firestore, Storage), and Stripe (demo mode).
 
-First, run the development server:
+Quick start (development/demo mode):
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Install deps
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+   ```powershell
+   npm install
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. Add `.env.local` values
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```
+   NEXT_PUBLIC_FIREBASE_API_KEY=...
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
+   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
+   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
+   NEXT_PUBLIC_FIREBASE_APP_ID=...
 
-## Learn More
+   NEXT_PUBLIC_BASE_URL=http://localhost:3000
+   NEXT_PUBLIC_STRIPE_MOCK=1
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+3. Start dev server
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```powershell
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. Use the Admin → Seed Demo Plans button to populate demo plans.
+5. Sign up as a user, then go to Plans and click Subscribe. Demo mode will redirect to a checkout success page and create a subscription document in Firestore.
 
-## Deploy on Vercel
+Notes:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Stripe webhooks and Cloud Functions are not deployed in demo mode. For production, deploy functions and enable Blaze billing.
+- Firestore security rules are included in `firestore.rules` and should be reviewed for production.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+What to show recruiters:
+
+- Live demo on Vercel (frontend only) with mock checkout.
+Backend functions run in Firebase Cloud Functions. See `functions/src/index.ts` for webhook logic.
