@@ -6,10 +6,10 @@ import { getPlans, addPlan, updatePlan, deletePlan } from "../../lib/firestore";
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
-  const [profile, setProfile] = useState<any>(null);
-  const [plans, setPlans] = useState<any[]>([]);
+  const [profile, setProfile] = useState<{ role?: string } | null>(null);
+  const [plans, setPlans] = useState<import("../../lib/firestore").Plan[]>([]);
   const [loadingPlans, setLoadingPlans] = useState(true);
-  const [form, setForm] = useState({ name: "", price: 0, frequency: "monthly", description: "", imageUrl: "" });
+  const [form, setForm] = useState<{ name: string; price: number; frequency: string; description: string; imageUrl: string }>({ name: "", price: 0, frequency: "monthly", description: "", imageUrl: "" });
   const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -17,9 +17,15 @@ export default function AdminPage() {
     const uid = user.uid;
     async function load() {
       const p = await getUserProfile(uid);
-      setProfile(p);
+      if (p && typeof p === 'object' && 'role' in p) {
+        setProfile({
+          role: typeof (p as { role?: string }).role === 'string' ? (p as { role?: string }).role : undefined
+        });
+      } else {
+        setProfile(null);
+      }
       const all = await getPlans();
-      setPlans(all as any[]);
+  setPlans(all);
       setLoadingPlans(false);
     }
     load();
@@ -28,23 +34,23 @@ export default function AdminPage() {
   const refresh = async () => {
     setLoadingPlans(true);
     const all = await getPlans();
-    setPlans(all as any[]);
+  setPlans(all);
     setLoadingPlans(false);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (editingId) {
       await updatePlan(editingId, form);
       setEditingId(null);
     } else {
-      await addPlan(form as any);
+  await addPlan(form);
     }
     setForm({ name: "", price: 0, frequency: "monthly", description: "", imageUrl: "" });
     await refresh();
   };
 
-  const handleEdit = (plan: any) => {
+  const handleEdit = (plan: import("../../lib/firestore").Plan) => {
     setEditingId(plan.id);
     setForm({ name: plan.name || "", price: plan.price || 0, frequency: plan.frequency || "monthly", description: plan.description || "", imageUrl: plan.imageUrl || "" });
   };
@@ -62,7 +68,7 @@ export default function AdminPage() {
       { name: "Quarterly", price: 60, frequency: "quarterly", description: "Bigger box every 3 months.", imageUrl: "https://via.placeholder.com/240x160?text=Quarterly" },
     ];
     for (const p of demo) {
-      await addPlan(p as any);
+      await addPlan(p);
     }
     await refresh();
   };
@@ -106,6 +112,7 @@ export default function AdminPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {plans.map(p => (
               <div key={p.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow flex flex-col items-center p-6">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={p.imageUrl || 'https://via.placeholder.com/240x160'} alt={p.name} className="w-full h-36 object-cover rounded mb-4 border border-slate-100 dark:border-slate-800" />
                 <div className="font-bold text-lg mb-1 text-blue-700 text-center">{p.name}</div>
                 <div className="text-sm text-slate-600 dark:text-slate-300 mb-2 text-center">{p.description}</div>

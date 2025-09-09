@@ -19,7 +19,7 @@ export default function AuthPage() {
   const cardBg = "bg-white dark:bg-slate-900";
   const border = "border border-slate-200 dark:border-slate-700";
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setSubmitting(true);
@@ -34,8 +34,9 @@ export default function AuthPage() {
           console.error("Failed to create user profile:", e);
         }
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      if (err instanceof Error) setError(err.message);
+      else setError("Unknown error");
     }
     setSubmitting(false);
   };

@@ -19,7 +19,6 @@ type PlanDoc = {
   frequency: string;
   description: string;
   imageUrl?: string;
-  [key: string]: any;
 };
 
 export type Plan = PlanDoc & { id: string };
@@ -39,7 +38,7 @@ export async function getPlans(): Promise<Plan[]> {
 }
 
 // Update a plan
-export async function updatePlan(planId: string, data: any) {
+export async function updatePlan(planId: string, data: Partial<PlanDoc>) {
   return await updateDoc(doc(db, "plans", planId), data);
 }
 
@@ -70,17 +69,19 @@ export async function getUserSubscriptions(userId: string) {
   // Query subscriptions for the specific user instead of fetching all documents
   const q = query(collection(db, "subscriptions"), where("userId", "==", userId));
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((doc: QueryDocumentSnapshot) => ({
-    id: doc.id,
-    ...(doc.data() as {
+  return snapshot.docs.map((doc: QueryDocumentSnapshot) => {
+    const data = doc.data() as {
       userId: string;
       planId: string;
       status: string;
       nextBillingDate: string;
       stripeSubscriptionId: string;
-      [key: string]: any;
-    }),
-  }));
+    };
+    return {
+      id: doc.id,
+      ...data,
+    };
+  });
 }
 
 // Get user profile by uid
@@ -108,7 +109,7 @@ export async function updateSubscriptionStatus(
   status: string,
   nextBillingDate?: string | null
 ) {
-  const update: any = { status };
+  const update: { status: string; nextBillingDate?: string | null } = { status };
   if (nextBillingDate !== undefined) update.nextBillingDate = nextBillingDate;
   return await updateDoc(doc(db, "subscriptions", subId), update);
 }
@@ -131,15 +132,17 @@ export async function pauseSubscription(subId: string) {
 // Get all subscriptions (admin use)
 export async function getAllSubscriptions() {
   const snapshot = await getDocs(collection(db, "subscriptions"));
-  return snapshot.docs.map((d: QueryDocumentSnapshot) => ({
-    id: d.id,
-    ...(d.data() as {
+  return snapshot.docs.map((d: QueryDocumentSnapshot) => {
+    const data = d.data() as {
       userId: string;
       planId: string;
       status: string;
       nextBillingDate: string;
       stripeSubscriptionId: string;
-      [key: string]: any;
-    }),
-  }));
+    };
+    return {
+      id: d.id,
+      ...data,
+    };
+  });
 }

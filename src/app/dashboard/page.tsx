@@ -6,8 +6,8 @@ import { getUserProfile, getUserSubscriptions, cancelSubscription, pauseSubscrip
 
 export default function DashboardPage() {
   const { user, loading } = useAuth();
-  const [profile, setProfile] = useState<any>(null);
-  const [subs, setSubs] = useState<any[]>([]);
+  const [profile, setProfile] = useState<{ role?: string; activePlan?: string } | null>(null);
+  const [subs, setSubs] = useState<Array<{ id: string; planId: string; status: string; nextBillingDate: string }>>([]);
   const [loadingSubs, setLoadingSubs] = useState(true);
 
   useEffect(() => {
@@ -15,7 +15,14 @@ export default function DashboardPage() {
     const uid = user.uid;
     async function load() {
       const p = await getUserProfile(uid);
-      setProfile(p);
+      if (p && typeof p === 'object' && ('role' in p || 'activePlan' in p)) {
+        setProfile({
+          role: typeof (p as { role?: string }).role === 'string' ? (p as { role?: string }).role : undefined,
+          activePlan: typeof (p as { activePlan?: string }).activePlan === 'string' ? (p as { activePlan?: string }).activePlan : undefined
+        });
+      } else {
+        setProfile(null);
+      }
       const s = await getUserSubscriptions(uid);
       setSubs(s);
       setLoadingSubs(false);

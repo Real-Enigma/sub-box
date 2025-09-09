@@ -30,7 +30,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="max-w-6xl mx-auto px-6 py-6 text-sm text-muted-foreground flex justify-between">
             <div>© {new Date().getFullYear()} Subscription Box Demo</div>
             <div>
+              {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
               <a href="/" className="mr-4 hover:underline">Home</a>
+              {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
               <a href="/plans" className="hover:underline">Plans</a>
             </div>
           </div>

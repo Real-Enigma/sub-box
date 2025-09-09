@@ -69,6 +69,7 @@ export default function PlansPage() {
             key={plan.id}
             className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg flex flex-col items-center p-6 hover:shadow-xl transition-all duration-150"
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={plan.imageUrl || "https://via.placeholder.com/240x160?text=Plan"}
               alt={plan.name}
