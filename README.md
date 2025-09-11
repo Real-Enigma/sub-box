@@ -1,3 +1,5 @@
+# WORK IN PROGRESS
+
 # Subscription Box Service (Demo)
 
 This project is a subscription box service built with Next.js (App Router), TailwindCSS, Firebase (Auth, Firestore, Storage), and Stripe (demo mode).
